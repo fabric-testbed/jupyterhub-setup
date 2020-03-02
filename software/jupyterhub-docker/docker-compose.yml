@@ -1,0 +1,77 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+# JupyterHub docker-compose configuration file
+version: "3"
+
+services:
+  proxy:
+    restart: always
+    container_name: proxy
+    image: jupyterhub/configurable-http-proxy:4.0.1
+    restart: always
+    environment:
+      CONFIGPROXY_AUTH_TOKEN: ${CONFIGPROXY_AUTH_TOKEN}
+      PYTHONUNBUFFERED: "1"
+    user: "0:0"
+    ports:
+      - "443:443"
+    networks:
+      default:
+        aliases:
+          - proxy
+    volumes:
+      - "/root/jupyterhub-conf:/root/jupyterhub-conf"
+    command: >
+      configurable-http-proxy
+      --port 443
+      --api-ip 0.0.0.0
+      --api-port 8001
+      --error-target http://jupyterhub:8081/hub/error
+      --ssl-key /root/jupyterhub-conf/star_renci_org.key
+      --ssl-cert /root/jupyterhub-conf/star_renci_org.crt
+      --default-target http://jupyterhub
+  hub:
+    user: "0:0"
+    depends_on:
+      - proxy
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyterhub
+    restart: always
+    image: rencinrig:fabric_jupyterhub
+    container_name: jupyterhub
+    networks:
+      default:
+        aliases:
+          - jupyterhub
+    volumes:
+      # Bind Docker socket on the host so we can connect to the daemon from
+      # within the container
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      # Bind Docker volume on host for JupyterHub database and cookie secrets
+      - "data:${DATA_VOLUME_CONTAINER}:rw"
+      # The log is set to : c.JupyterHub.extra_log_file = '/var/log/jupyterhub.log'
+      - "/var/log:/var/log"
+      - "/root/jupyterhub-conf:/root/jupyterhub-conf"
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+    working_dir: ${DATA_VOLUME_CONTAINER}
+    command: bash -c "
+      python3 -m pip install git+https://github.com/fabric-testbed/fabricauthenticator.git
+      && jupyterhub -f /srv/jupyterhub/jupyterhub_config.py &>> '/var/log/jupyterhub.log'
+      "
+
+volumes:
+  data:
+    external:
+      name: ${DATA_VOLUME_HOST}
+
+networks:
+  default:
+    external:
+      name: ${DOCKER_NETWORK_NAME}
+
+
