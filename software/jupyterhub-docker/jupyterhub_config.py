@@ -905,7 +905,7 @@ c.Spawner.mem_limit = '2G'
 #  If encryption is unavailable, auth_state cannot be persisted.
 #
 #  New in JupyterHub 0.8
-#c.Authenticator.enable_auth_state = False
+c.Authenticator.enable_auth_state = True
 
 ## An optional hook function that you can implement to do some bootstrapping work
 #  during authentication. For example, loading user account details from an
