@@ -4,6 +4,4 @@ RUN python3 -m pip install --no-cache-dir -r /srv/jupyterhub/requirements.txt
 COPY jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 COPY cull_idle_servers.py /srv/jupyterhub/cull_idle_servers.py
 COPY adminlist /srv/jupyterhub/adminlist
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
+RUN python3 -m pip install --index-url https://test.pypi.org/simple/ -I fabricauthenticator

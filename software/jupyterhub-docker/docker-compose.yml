@@ -59,10 +59,7 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
     working_dir: ${DATA_VOLUME_CONTAINER}
-    command: bash -c "
-      python3 -m pip install git+https://github.com/fabric-testbed/fabricauthenticator.git
-      && jupyterhub -f /srv/jupyterhub/jupyterhub_config.py &>> '/var/log/jupyterhub.log'
-      "
+    command: bash -c "jupyterhub -f /srv/jupyterhub/jupyterhub_config.py &>> '/var/log/jupyterhub.log'"
 
 volumes:
   data:
