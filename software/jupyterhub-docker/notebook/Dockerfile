@@ -5,6 +5,9 @@ RUN python3 -m pip install --no-cache-dir \
 COPY requirements.txt /tmp/requirements.txt
 RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 RUN python3 -m bash_kernel.install
+RUN python3 -m sos_notebook.install
+RUN jupyter labextension install transient-display-data
+RUN jupyter labextension install jupyterlab-sos
 
 USER root
 ENV NEW_NB_USER=fabric

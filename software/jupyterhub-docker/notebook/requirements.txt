@@ -1,3 +1,6 @@
 nbgitpuller
 nbresuse
 bash_kernel
+sos-notebook
+sos-bash
+sos-python
