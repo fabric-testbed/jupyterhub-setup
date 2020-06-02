@@ -8,7 +8,7 @@ at fabric-dev.renci.org
 First time:
 
 ```
-    docker build -t rencinrig/singleuser notebook/.
+    docker build -t fabrictestbed/jupyter-notebook notebook/.
     docker network create jupyterhub-network
     docker volume create jupyterhub-data
     docker-compose build

@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: Dockerfile.jupyterhub
     restart: always
-    image: rencinrig:fabric_jupyterhub
+    image: fabrictestbed/jupyterhub-docker
     container_name: jupyterhub
     networks:
       default:
