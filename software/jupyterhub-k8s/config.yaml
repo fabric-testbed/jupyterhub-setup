@@ -1,0 +1,50 @@
+proxy:
+  secretToken: ""
+singleuser:
+  image:
+    name: fabrictestbed/jupyter-notebook
+    tag: 0.0.1
+  defaultUrl: "/lab"
+  lifecycleHooks:
+    postStart:
+      exec:
+          command: ["/bin/sh", "-c", "gitpuller https://github.com/ericafu1122/template master template;"]
+hub:
+  image:
+    name: fabrictestbed/jupyterhub-k8s
+    tag: 0.9.0.0
+  extraConfig:
+    authconfig: |
+      c.Authenticator.enable_auth_state = True
+      c.CILogonOAuthenticator.client_id = ""
+      c.CILogonOAuthenticator.client_secret = ""
+      c.CILogonOAuthenticator.oauth_callback_url = ""
+    jupyterlab: |
+      c.Spawner.cmd = ['jupyter-labhub']
+  extraEnv:
+    # see https://jupyterhub.readthedocs.io/en/stable/reference/authenticators.html#authentication-state
+    # for JUPYTERHUB_CRYPT_KEY
+    JUPYTERHUB_CRYPT_KEY: ""
+    # the FABRIC CILogon instance LDAP setting:
+    LDAP_HOST:
+    LDAP_USER:
+    LDAP_PASSWORD:
+    LDAP_SEARCH_BASE:
+cull:
+  timeout: 3600   # 1 hr
+  every: 600      # check performs every 10 mins
+  max_age: 86400  # 24 hrs
+
+auth:
+  type: custom
+  custom:
+      className: fabricauthenticator.FabricAuthenticator
+  admin:
+    users:
+      - ericafu@unc.edu
+      - kthare10@unc.edu
+      - stealey@unc.edu
+    access: true # admin can access user's notebook for debugging purpose
+
+
+
