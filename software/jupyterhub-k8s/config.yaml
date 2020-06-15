@@ -8,7 +8,7 @@ singleuser:
   lifecycleHooks:
     postStart:
       exec:
-          command: ["/bin/sh", "-c", "gitpuller https://github.com/ericafu1122/template master template;"]
+          command: ["/bin/sh", "-c", "gitpuller https://github.com/fabric-testbed/jupyternb-template master template;"]
 hub:
   image:
     name: fabrictestbed/jupyterhub-k8s
