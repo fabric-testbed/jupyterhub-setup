@@ -18,6 +18,7 @@ c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
 c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 c.DockerSpawner.remove_containers = True    # Remove containers once they are stopped
+c.Spawner.env_keep.append('FABRIC_CREDMGR_HOST')
 
 #------------------------------------------------------------------------------
 # Application(SingletonConfigurable) configuration
