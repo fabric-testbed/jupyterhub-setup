@@ -9,6 +9,10 @@ RUN python3 -m sos_notebook.install
 RUN jupyter labextension install transient-display-data
 RUN jupyter labextension install jupyterlab-sos
 
+# install FABRIC CLI
+RUN python3 -m pip install --index-url https://test.pypi.org/simple/ fabric-cli
+RUN echo 'eval "$(_FABRIC_CLI_COMPLETE=source_bash fabric-cli)"' >> ~/.bashrc
+
 USER root
 ENV NEW_NB_USER=fabric
 ENV HOME=/home/$NEW_NB_USER
