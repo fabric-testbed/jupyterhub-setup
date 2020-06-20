@@ -7,8 +7,11 @@ at fabric-dev.renci.org
 
 First time:
 
+Modify .env according to your environment, then
+
 ```
-    docker build -t fabrictestbed/jupyter-notebook notebook/.
+    # pull the notebook image (DOCKER_NOTEBOOK_IMAGE in .env)
+    docker pull fabrictestbed/jupyter-notebook:<version>
     docker network create jupyterhub-network
     docker volume create jupyterhub-data
     docker-compose build

@@ -1,7 +1,0 @@
-nbgitpuller
-nbresuse
-bash_kernel
-sos-notebook
-sos-bash
-sos-python
-click >= 7.1.1
