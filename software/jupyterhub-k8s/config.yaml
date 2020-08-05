@@ -18,6 +18,8 @@ hub:
   extraConfig:
     authconfig: |
       c.Authenticator.enable_auth_state = True
+      c.Authenticator.refresh_pre_spawn = True
+      c.Authenticator.auth_refresh_age = 86400
       c.CILogonOAuthenticator.client_id = ""
       c.CILogonOAuthenticator.client_secret = ""
       c.CILogonOAuthenticator.oauth_callback_url = ""

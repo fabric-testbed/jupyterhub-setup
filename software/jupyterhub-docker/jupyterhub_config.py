@@ -868,6 +868,11 @@ c.Spawner.mem_limit = '2G'
 #  See :meth:`.refresh_user` for what happens when user auth info is refreshed
 #  (nothing by default).
 #c.Authenticator.auth_refresh_age = 300
+c.Authenticator.auth_refresh_age = 86400
+# since we enable c.Authenticator.refresh_pre_spawn = True, 
+# and add actions in refresh_user() in fabricauthenticator,
+# we need to set auth_refresh_age explictly otherwise default value 300 is implied and 
+# refresh occurs every 5 mins!
 
 ## Automatically begin the login process
 #
@@ -949,7 +954,7 @@ c.Authenticator.enable_auth_state = True
 #
 #  If refresh_user cannot refresh the user auth data, launch will fail until the
 #  user logs in again.
-#c.Authenticator.refresh_pre_spawn = False
+c.Authenticator.refresh_pre_spawn = True
 
 ## Dictionary mapping authenticator usernames to JupyterHub users.
 #
