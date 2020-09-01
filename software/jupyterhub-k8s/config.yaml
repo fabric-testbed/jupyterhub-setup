@@ -14,7 +14,7 @@ singleuser:
 hub:
   image:
     name: fabrictestbed/jupyterhub-k8s
-    tag: 0.9.0.0
+    tag: 0.9.0
   extraConfig:
     authconfig: |
       c.Authenticator.enable_auth_state = True
@@ -25,6 +25,10 @@ hub:
       c.CILogonOAuthenticator.oauth_callback_url = ""
     jupyterlab: |
       c.Spawner.cmd = ['jupyter-labhub']
+      c.KubeSpawner.extra_pod_config = {
+        "restartPolicy": "OnFailure",
+        "dnsPolicy": "Default"
+      }
   extraEnv:
     # see https://jupyterhub.readthedocs.io/en/stable/reference/authenticators.html#authentication-state
     # for JUPYTERHUB_CRYPT_KEY
