@@ -1,16 +1,5 @@
 proxy:
   secretToken: ""
-  https:
-    hosts:
-      - jupyter.fabric-testbed.net
-    type: manual
-    manual:
-      key: |
-        -----BEGIN RSA PRIVATE KEY-----
-        -----END RSA PRIVATE KEY-----
-      cert: |
-        -----BEGIN CERTIFICATE-----
-        -----END CERTIFICATE-----
 singleuser:
   image:
     name: fabrictestbed/jupyter-notebook
