@@ -25,6 +25,7 @@ hub:
       c.CILogonOAuthenticator.oauth_callback_url = ""
     jupyterlab: |
       c.Spawner.cmd = ['jupyter-labhub']
+      c.Spawner.env_keep.append('FABRIC_CREDMGR_HOST')
       c.KubeSpawner.extra_pod_config = {
         "restartPolicy": "OnFailure",
         "dnsPolicy": "Default"
