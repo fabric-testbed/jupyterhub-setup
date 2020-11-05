@@ -17,6 +17,7 @@ singleuser:
     tag: 0.0.1
   extraEnv:
     FABRIC_CREDMGR_HOST:
+    FABRIC_ORCHESTRATOR_HOST:
   defaultUrl: "/lab"
   lifecycleHooks:
     postStart:
