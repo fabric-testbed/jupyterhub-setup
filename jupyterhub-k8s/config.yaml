@@ -16,13 +16,17 @@ singleuser:
     name: fabrictestbed/jupyter-notebook
     tag: 0.0.1
   extraEnv:
-    FABRIC_CREDMGR_HOST:
-    FABRIC_ORCHESTRATOR_HOST:
+    FABRIC_CREDMGR_HOST: cm.fabric-testbed.net
+    FABRIC_ORCHESTRATOR_HOST: orchestrator.fabric-testbed.net
+    FABRIC_TOKEN_LOCATION: /home/fabric/.tokens.json
+    FABRIC_NOTEBOOK_LOCATION: /home/fabric/work/jupyter-examples
   defaultUrl: "/lab"
+  storage:
+    capacity: 1Gi
   lifecycleHooks:
     postStart:
       exec:
-          command: ["/bin/sh", "-c", "gitpuller https://github.com/fabric-testbed/jupyternb-template master template;"]
+          command: ["/opt/conda/bin/python3", "/var/tmp/jupyter_startup.py"]
 hub:
   image:
     name: fabrictestbed/jupyterhub-k8s
@@ -32,6 +36,7 @@ hub:
       c.Authenticator.enable_auth_state = True
       c.Authenticator.refresh_pre_spawn = True
       c.Authenticator.auth_refresh_age = 86400
+      c.CILogonOAuthenticator.username_claim = 'email'
       c.CILogonOAuthenticator.client_id = ""
       c.CILogonOAuthenticator.client_secret = ""
       c.CILogonOAuthenticator.oauth_callback_url = ""
@@ -50,6 +55,7 @@ hub:
     LDAP_USER:
     LDAP_PASSWORD:
     LDAP_SEARCH_BASE:
+    FABRIC_COU_JUPYTERHUB:
 cull:
   timeout: 3600   # 1 hr
   every: 600      # check performs every 10 mins
