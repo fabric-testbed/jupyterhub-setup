@@ -1,5 +1,7 @@
 proxy:
   secretToken: ""
+  service:
+    type: ClusterIP
   https:
     hosts:
       - jupyter.fabric-testbed.net
@@ -12,39 +14,64 @@ proxy:
         -----BEGIN CERTIFICATE-----
         -----END CERTIFICATE-----
 singleuser:
-  image:
+  cpu:
+    limit: 4
+    guarantee: 4
+  memory:
+    limit: 1G 
+    guarantee: 1G 
+  cloudMetadata:
+    blockWithIptables: false
+  image: 
     name: fabrictestbed/jupyter-notebook
-    tag: 0.0.1
+    tag: 1.2.0
   extraEnv:
     FABRIC_CREDMGR_HOST: cm.fabric-testbed.net
     FABRIC_ORCHESTRATOR_HOST: orchestrator.fabric-testbed.net
     FABRIC_TOKEN_LOCATION: /home/fabric/.tokens.json
     FABRIC_NOTEBOOK_LOCATION: /home/fabric/work/jupyter-examples
+    FABRIC_NOTEBOOK_TAGS: rel1.1.1
+    FABRIC_NOTEBOOK_REPO_URL: https://github.com/fabric-testbed/jupyter-examples.git
+    FABRIC_CONFIG_LOCATION: /home/fabric/work/fabric_config
+    FABRIC_BASTION_HOST: bastion-1.fabric-testbed.net
+    FABRIC_BASTION_PRIVATE_KEY_NAME: fabric-bastion-key
+    FABRIC_SLICE_PRIVATE_KEY_NAME: slice-private-key
+    FABRIC_SLICE_PUBLIC_KEY_NAME: slice-public-key
   defaultUrl: "/lab"
   storage:
     capacity: 1Gi
+    homeMountPath: /home/fabric/work
   lifecycleHooks:
     postStart:
       exec:
           command: ["/opt/conda/bin/python3", "/var/tmp/jupyter_startup.py"]
 hub:
-  image:
+  service:
+    type: ClusterIP
+  image: 
     name: fabrictestbed/jupyterhub-k8s
-    tag: 0.9.0
+    tag: 1.0.1
+  config:
+    Authenticator:
+      admin_users:
+        - kthare10@unc.edu
+        - stealey@unc.edu
+      enable_auth_state: True
+      refresh_pre_spawn: True
+      auth_refresh_age: 86400
+    JupyterHub:
+      authenticator_class: fabricauthenticator.FabricAuthenticator
+      cookie_secret: 
+    CILogonOAuthenticator:
+      username_claim: email
+      client_id: 
+      client_secret: 
+      oauth_callback_url: https://jupyter.fabric-testbed.net/hub/oauth_callback
   extraConfig:
-    authconfig: |
-      c.Authenticator.enable_auth_state = True
-      c.Authenticator.refresh_pre_spawn = True
-      c.Authenticator.auth_refresh_age = 86400
-      c.CILogonOAuthenticator.username_claim = 'email'
-      c.CILogonOAuthenticator.client_id = ""
-      c.CILogonOAuthenticator.client_secret = ""
-      c.CILogonOAuthenticator.oauth_callback_url = ""
     jupyterlab: |
       c.Spawner.cmd = ['jupyter-labhub']
       c.KubeSpawner.extra_pod_config = {
-        "restartPolicy": "OnFailure",
-        "dnsPolicy": "Default"
+         "restartPolicy": "OnFailure"
       }
   extraEnv:
     # see https://jupyterhub.readthedocs.io/en/stable/reference/authenticators.html#authentication-state
@@ -59,18 +86,20 @@ hub:
 cull:
   timeout: 3600   # 1 hr
   every: 600      # check performs every 10 mins
-  max_age: 86400  # 24 hrs
+  maxAge: 86400  # 24 hrs
 
-auth:
-  type: custom
-  custom:
-      className: fabricauthenticator.FabricAuthenticator
-  admin:
-    users:
-      - ericafu@unc.edu
-      - kthare10@unc.edu
-      - stealey@unc.edu
-    access: true # admin can access user's notebook for debugging purpose
+scheduling:
+  userScheduler:
+    enabled: false
 
+ingress:
+  enabled: true 
+  hosts:
+    - jupyter.fabric-testbed.net
 
-
+prePuller:
+  hook:
+    enabled: false
+  continuous:
+    # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
+    enabled: false
