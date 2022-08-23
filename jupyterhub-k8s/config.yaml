@@ -1,22 +1,11 @@
 proxy:
-  secretToken: ""
+  secretToken: 
   service:
     type: ClusterIP
-  https:
-    hosts:
-      - jupyter.fabric-testbed.net
-    type: manual
-    manual:
-      key: |
-        -----BEGIN RSA PRIVATE KEY-----
-        -----END RSA PRIVATE KEY-----
-      cert: |
-        -----BEGIN CERTIFICATE-----
-        -----END CERTIFICATE-----
 singleuser:
   cpu:
     limit: 4
-    guarantee: 4
+    guarantee: 1
   memory:
     limit: 1G 
     guarantee: 1G 
@@ -24,19 +13,19 @@ singleuser:
     blockWithIptables: false
   image: 
     name: fabrictestbed/jupyter-notebook
-    tag: 1.2.0
+    tag: 1.3.0
   extraEnv:
     FABRIC_CREDMGR_HOST: cm.fabric-testbed.net
     FABRIC_ORCHESTRATOR_HOST: orchestrator.fabric-testbed.net
     FABRIC_TOKEN_LOCATION: /home/fabric/.tokens.json
     FABRIC_NOTEBOOK_LOCATION: /home/fabric/work/jupyter-examples
-    FABRIC_NOTEBOOK_TAGS: rel1.1.1
+    FABRIC_NOTEBOOK_TAGS: rel1.3
     FABRIC_NOTEBOOK_REPO_URL: https://github.com/fabric-testbed/jupyter-examples.git
     FABRIC_CONFIG_LOCATION: /home/fabric/work/fabric_config
     FABRIC_BASTION_HOST: bastion-1.fabric-testbed.net
     FABRIC_BASTION_PRIVATE_KEY_NAME: fabric-bastion-key
-    FABRIC_SLICE_PRIVATE_KEY_NAME: slice-private-key
-    FABRIC_SLICE_PUBLIC_KEY_NAME: slice-public-key
+    FABRIC_SLICE_PRIVATE_KEY_NAME: slice_key
+    FABRIC_SLICE_PUBLIC_KEY_NAME: slice_key.pub
   defaultUrl: "/lab"
   storage:
     capacity: 1Gi
@@ -50,14 +39,14 @@ hub:
     type: ClusterIP
   image: 
     name: fabrictestbed/jupyterhub-k8s
-    tag: 1.0.1
+    tag: 1.2.0
   config:
     Authenticator:
       admin_users:
-        - kthare10@unc.edu
-        - stealey@unc.edu
+        - kthare10@email.unc.edu
+        - stealey@email.unc.edu
       enable_auth_state: True
-      refresh_pre_spawn: True
+      refresh_pre_spawn: True 
       auth_refresh_age: 86400
     JupyterHub:
       authenticator_class: fabricauthenticator.FabricAuthenticator
@@ -76,30 +65,41 @@ hub:
   extraEnv:
     # see https://jupyterhub.readthedocs.io/en/stable/reference/authenticators.html#authentication-state
     # for JUPYTERHUB_CRYPT_KEY
-    JUPYTERHUB_CRYPT_KEY: ""
+    JUPYTERHUB_CRYPT_KEY: 
     # the FABRIC CILogon instance LDAP setting:
-    LDAP_HOST:
-    LDAP_USER:
-    LDAP_PASSWORD:
-    LDAP_SEARCH_BASE:
-    FABRIC_COU_JUPYTERHUB:
+    LDAP_HOST: 
+    LDAP_USER: 
+    LDAP_PASSWORD: 
+    LDAP_SEARCH_BASE: 
+    FABRIC_COU_JUPYTERHUB: CO:COU:Jupyterhub:members:active
 cull:
   timeout: 3600   # 1 hr
-  every: 600      # check performs every 10 mins
+  every: 300      # check performs every 10 mins
   maxAge: 86400  # 24 hrs
-
-scheduling:
-  userScheduler:
-    enabled: false
 
 ingress:
   enabled: true 
-  hosts:
-    - jupyter.fabric-testbed.net
+  hosts: 
+      - jupyter.fabric-testbed.net
+  tls:
+   - hosts:
+      - jupyter.fabric-testbed.net
+     secretName:  jupyterhub-tls
+  annotations: 
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+# Should be uncommented when running on Sterling
+#    nginx.ingress.kubernetes.io/whitelist-source-range: "0.0.0.0/0,::/0"
 
-prePuller:
-  hook:
-    enabled: false
-  continuous:
-    # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
-    enabled: false
+# Should be uncommented when running on Sterling
+#scheduling:
+#  userScheduler:
+#    enabled: false
+
+# Should be uncommented when running on Sterling
+#prePuller:
+#  hook:
+#    enabled: false
+#  continuous:
+#    # NOTE: if used with a Cluster Autoscaler, also add user-placeholders
+#    enabled: false
