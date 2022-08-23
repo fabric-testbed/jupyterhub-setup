@@ -5,7 +5,7 @@ proxy:
 singleuser:
   cpu:
     limit: 4
-    guarantee: 1
+    guarantee: 4
   memory:
     limit: 1G 
     guarantee: 1G 
