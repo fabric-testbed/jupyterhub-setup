@@ -26,9 +26,9 @@ singleuser:
     FABRIC_CREDMGR_HOST: cm.fabric-testbed.net
     FABRIC_ORCHESTRATOR_HOST: orchestrator.fabric-testbed.net
     FABRIC_TOKEN_LOCATION: /home/fabric/.tokens.json
-    FABRIC_NOTEBOOK_LOCATION: /home/fabric/work/jupyter-examples
-    FABRIC_NOTEBOOK_TAGS: rel1.3
-    FABRIC_NOTEBOOK_REPO_URL: https://github.com/fabric-testbed/jupyter-examples.git
+    FABRIC_NOTEBOOK_LOCATION: /home/fabric/work
+    FABRIC_NOTEBOOK_TAGS: rel1.3.1
+    FABRIC_NOTEBOOK_REPO_URL: https://github.com/fabric-testbed/jupyter-examples/archive/refs/tags/
     FABRIC_CONFIG_LOCATION: /home/fabric/work/fabric_config
     FABRIC_BASTION_HOST: bastion-1.fabric-testbed.net
     FABRIC_BASTION_PRIVATE_KEY_NAME: fabric-bastion-key
