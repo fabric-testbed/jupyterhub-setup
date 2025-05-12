@@ -21,13 +21,14 @@ singleuser:
     guarantee: 512M
   image: 
     name: fabrictestbed/jupyter-notebook
-    tag: 1.5.0
+    tag: 1.8.1
   extraEnv:
     FABRIC_CREDMGR_HOST: cm.fabric-testbed.net
     FABRIC_ORCHESTRATOR_HOST: orchestrator.fabric-testbed.net
+    FABRIC_CORE_API_HOST: uis.fabric-testbed.net
     FABRIC_TOKEN_LOCATION: /home/fabric/.tokens.json
     FABRIC_NOTEBOOK_LOCATION: /home/fabric/work
-    FABRIC_NOTEBOOK_TAGS: rel1.5.0
+    FABRIC_NOTEBOOK_TAGS: rel1.8.1
     FABRIC_NOTEBOOK_REPO_URL: https://github.com/fabric-testbed/jupyter-examples/archive/refs/tags/
     FABRIC_CONFIG_LOCATION: /home/fabric/work/fabric_config
     FABRIC_BASTION_HOST: bastion.fabric-testbed.net
@@ -87,20 +88,30 @@ singleuser:
 hub:
   image: 
     name: fabrictestbed/jupyterhub-k8s
-    tag: 1.4.0
+    tag: 1.9.0
+  loadRoles:
+    user: 
+      description: 'Standard user privileges'
+      scopes: ['self', 'read:metrics']
+    server: 
+      description: 'Post activity only'
+      scopes: ['users:activity!user', access:servers!user, 'read:metrics']
   config:
+    KubeSpawner:
+      slug_scheme: safe
     Authenticator:
       admin_users:
         - kthare10@email.unc.edu
         - stealey@email.unc.edu
       enable_auth_state: True
       refresh_pre_spawn: True 
-      auth_refresh_age: 86400
+      auth_refresh_age: 86400 
+      allow_all: true
     JupyterHub:
       authenticator_class: fabricauthenticator.fabricauthenticator.FabricAuthenticator
       cookie_secret: 
     CILogonOAuthenticator:
-      username_claim: email
+      username_claim: username
       client_id: 
       client_secret: 
       oauth_callback_url: https://jupyter.fabric-testbed.net/hub/oauth_callback
@@ -111,6 +122,10 @@ hub:
          "restartPolicy": "OnFailure"
       }
   extraEnv:
+    FABRIC_JUPYTERHUB_ROLE: Jupyterhub
+    FABRIC_CORE_API_HOST: "https://uis.fabric-testbed.net"
+    FABRIC_CORE_API_BEARER_TOKEN: 
+    FABRIC_PRE_SPAWN_TIMEOUT: "60"
     # see https://jupyterhub.readthedocs.io/en/stable/reference/authenticators.html#authentication-state
     # for JUPYTERHUB_CRYPT_KEY
     JUPYTERHUB_CRYPT_KEY: 
